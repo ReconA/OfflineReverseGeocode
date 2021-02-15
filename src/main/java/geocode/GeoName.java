@@ -31,6 +31,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -39,8 +40,9 @@ import java.util.Comparator;
  */
 
 public class GeoName extends KDNodeComparator<GeoName> {
+    public Long id;
     public String name;
-    public boolean majorPlace; // Major or minor place
+    public Character featureClass; // Class of the location. Eg 'P' for city/village, or H for ocean/lake etc. 
     public double latitude;
     public double longitude;
     public double point[] = new double[3]; // The 3D coordinates of the point
@@ -48,8 +50,9 @@ public class GeoName extends KDNodeComparator<GeoName> {
 
     GeoName(String data) {
         String[] names = data.split("\t");
+        this.id = Long.parseLong(names[0]);
         name = names[1];
-        majorPlace = names[6].equals("P");
+        featureClass = Character.valueOf(names[6].charAt(0)); // The feature class is one letter. 
         latitude = Double.parseDouble(names[4]);
         longitude = Double.parseDouble(names[5]);
         setPoint();
@@ -69,9 +72,12 @@ public class GeoName extends KDNodeComparator<GeoName> {
         point[2] = sin(toRadians(latitude));
     }
 
+    
+
     @Override
     public String toString() {
-        return name;
+        return "GeoName [id=" + id + ", name=" + name + ", featureClass=" + featureClass + ", latitude=" + latitude
+                + ", longitude=" + longitude + ", point=" + Arrays.toString(point) + ", country=" + country + "]";
     }
 
     @Override
